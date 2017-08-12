@@ -1,8 +1,8 @@
-﻿namespace MilkSharp.Core
+﻿namespace MilkSharp
 {
     public class MilkAuthToken
     {
-        internal MilkAuthToken()
+        public MilkAuthToken()
         {
         }
     }

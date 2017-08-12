@@ -11,8 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MilkSharp.Core\MilkSharp.Core.csproj" />
-    <ProjectReference Include="..\..\src\MilkSharp.Reactive\MilkSharp.Reactive.csproj" />
+    <ProjectReference Include="..\..\src\MilkSharp\MilkSharp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
