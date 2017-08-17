@@ -13,13 +13,16 @@ namespace MilkSharp.Test
         [Fact]
         public async void EchoTestAsync()
         {
-            var mock = new Mock<IMilkHttpClient>();
-            mock.Setup(c => c.Post(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+            var httpClientMock = new Mock<IMilkHttpClient>();
+            httpClientMock.Setup(c => c.Post(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
                 .Callback<string, IDictionary<string, string>>(
                     (url, parameters) =>
                     {
-                        Assert.Equal("https://api.rememberthemilk.com/services/rest/?method=rtm.test.echo", url);
+                        Assert.Equal("https://api.rememberthemilk.com/services/rest/", url);
+                        Assert.Equal("rtm.test.echo", parameters["method"]);
                         Assert.Equal("bar", parameters["foo"]);
+                        Assert.Equal("api-key", parameters["api_key"]);
+                        Assert.Equal("signature", parameters["api_sig"]);
                     })
                 .Returns(
                     Task.FromResult(new MilkHttpResponseMessage
@@ -32,12 +35,18 @@ namespace MilkSharp.Test
                             </rsp>
                         "
                     }));
-            IMilkHttpClient httpClient = mock.Object;
+            var httpClient = httpClientMock.Object;
 
-            var context = new MilkContext("api -key", "secret");
-            MilkTestClient milkTestClient = new MilkTestClient(context, httpClient);
+            var signatureGeneratorMock = new Mock<IMilkSignatureGenerator>();
+            signatureGeneratorMock.Setup(g => g.Generate(It.IsAny<IDictionary<string, string>>()))
+                .Returns("signature");
+  
+            var signatureGenerator = signatureGeneratorMock.Object;
 
-            IDictionary<string, string> param = new Dictionary<string, string>();
+            var context = new MilkContext("api-key", "secret");
+            var milkTestClient = new MilkTestClient(context, httpClient, signatureGenerator);
+
+            var param = new Dictionary<string, string>();
             param["foo"] = "bar";
 
             MilkTestEchoResponse rsp = await milkTestClient.Echo(param);

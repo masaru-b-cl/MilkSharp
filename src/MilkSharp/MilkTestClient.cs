@@ -9,29 +9,35 @@ namespace MilkSharp
     {
         private MilkContext context;
         private IMilkHttpClient httpClient;
+        private IMilkSignatureGenerator signatureGenerator;
 
-        public MilkTestClient(MilkContext context) : this(context, new MilkHttpClient())
+        public MilkTestClient(MilkContext context) : this(context, new MilkHttpClient(), new MilkSignatureGenerator())
         {
         }
 
-        public MilkTestClient(MilkContext context, IMilkHttpClient httpClient)
+        public MilkTestClient(MilkContext context, IMilkHttpClient httpClient, IMilkSignatureGenerator signatureGenerator)
         {
             this.context = context;
             this.httpClient = httpClient;
+            this.signatureGenerator = signatureGenerator;
         }
 
         public async Task<MilkTestEchoResponse> Echo(IDictionary<string, string> parameters)
         {
-            var methodName = "rtm.test.echo";
-            var url = $"https://api.rememberthemilk.com/services/rest/?method={methodName}";
-            IDictionary<string, string> signaturedParameters = new Dictionary<string, string>(parameters);
+            var url = $"https://api.rememberthemilk.com/services/rest/";
+            var postParameters = new Dictionary<string, string>(parameters);
+            postParameters.Add("method", "rtm.test.echo");
+            postParameters.Add("api_key", context.ApiKey);
 
-            MilkHttpResponseMessage response = await httpClient.Post(url, signaturedParameters);
+            var signature = signatureGenerator.Generate(postParameters);
+            postParameters.Add("api_sig", signature);
+
+            var response = await httpClient.Post(url, postParameters);
             var rawRsp = response.Content;
 
-            MilkTestEchoResponse rsp = MilkTestEchoResponse.Parse(rawRsp);
+            var rsp = MilkTestEchoResponse.Parse(rawRsp);
 
-           return await Task.FromResult(rsp);
+            return await Task.FromResult(rsp);
         }
     }
 }
