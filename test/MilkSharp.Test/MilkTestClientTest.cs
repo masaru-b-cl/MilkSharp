@@ -26,15 +26,15 @@ namespace MilkSharp.Test
                     })
                 .Returns(
                     Task.FromResult(new MilkHttpResponseMessage
-                    {
-                        Status = HttpStatusCode.OK,
-                        Content = @"
+                    (
+                        HttpStatusCode.OK,
+                        @"
                             <rsp stat=""ok"">
                                 <method>rtm.test.echo</method>
                                 <foo>bar</foo>
                             </rsp>
                         "
-                    }));
+                    )));
             var httpClient = httpClientMock.Object;
 
             var signatureGeneratorMock = new Mock<IMilkSignatureGenerator>();
