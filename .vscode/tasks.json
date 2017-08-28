@@ -3,6 +3,10 @@
     "command": "dotnet",
     "isShellCommand": true,
     "args": [],
+    "windows": {
+        "command": "cmd",
+        "args": [ "/C", "chcp 65001 && dotnet"]
+    },
     "tasks": [
         {
             "taskName": "build",
