@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MilkSharp", "src\MilkSharp\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{453C58F8-D2D2-4A88-84F9-6756EAA69B07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MilkSharp.Sample.ConsoleApp", "sample\MilkSharp.Sample.ConsoleApp\MilkSharp.Sample.ConsoleApp.csproj", "{C96A5D36-7E43-4B7B-9B20-21C5463440ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MilkSharp.Sample.ConsoleApp", "sample\MilkSharp.Sample.ConsoleApp\MilkSharp.Sample.ConsoleApp.csproj", "{C96A5D36-7E43-4B7B-9B20-21C5463440ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +45,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{852FC921-0C00-47C5-B31C-09E86CF46DE2} = {4A444F00-5A0A-4C05-9F66-F5E5F07B4781}
 		{5A278A59-D78E-4C51-935D-3B18DAE79D71} = {40BB3D0E-5FC3-4567-8152-882A6B46C5F1}
+		{C96A5D36-7E43-4B7B-9B20-21C5463440ED} = {453C58F8-D2D2-4A88-84F9-6756EAA69B07}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {88BA6B59-3D21-4B38-90D5-752F3BA2AC42}
