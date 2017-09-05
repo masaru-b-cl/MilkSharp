@@ -22,7 +22,7 @@ namespace MilkSharp
             this.signatureGenerator = signatureGenerator;
         }
 
-        public async Task<MilkTestEchoResponse> Echo(IDictionary<string, string> parameters)
+        public async Task<(MilkTestEchoResponse, MilkFailureResponse)> Echo(IDictionary<string, string> parameters)
         {
             var url = $"https://api.rememberthemilk.com/services/rest/";
             var postParameters = new Dictionary<string, string>(parameters);
@@ -37,7 +37,7 @@ namespace MilkSharp
 
             var rsp = MilkTestEchoResponse.Parse(rawRsp);
 
-            return await Task.FromResult(rsp);
+            return (await Task.FromResult(rsp), null);
         }
     }
 }

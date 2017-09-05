@@ -49,7 +49,7 @@ namespace MilkSharp.Test
             var param = new Dictionary<string, string>();
             param["foo"] = "bar";
 
-            MilkTestEchoResponse rsp = await milkTestClient.Echo(param);
+            (MilkTestEchoResponse rsp, MilkFailureResponse failure) = await milkTestClient.Echo(param);
 
             Assert.Equal("bar", rsp["foo"]);
         }
