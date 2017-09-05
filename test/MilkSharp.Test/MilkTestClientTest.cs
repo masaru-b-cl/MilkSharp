@@ -11,7 +11,7 @@ namespace MilkSharp.Test
     public class MilkTestClientTest
     {
         [Fact]
-        public async void EchoTestAsync()
+        public async void EchoTest()
         {
             var httpClientMock = new Mock<IMilkHttpClient>();
             httpClientMock.Setup(c => c.Post(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
@@ -49,9 +49,44 @@ namespace MilkSharp.Test
             var param = new Dictionary<string, string>();
             param["foo"] = "bar";
 
-            (MilkTestEchoResponse rsp, MilkFailureResponse failure) = await milkTestClient.Echo(param);
+            var (rsp, _) = await milkTestClient.Echo(param);
 
             Assert.Equal("bar", rsp["foo"]);
+        }
+
+        [Fact]
+        public async void FailureTest()
+        {
+            var httpClientMock = new Mock<IMilkHttpClient>();
+            httpClientMock.Setup(c => c.Post(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+                .Returns(
+                    Task.FromResult(new MilkHttpResponseMessage
+                    (
+                        HttpStatusCode.OK,
+                        @"
+                            <rsp stat=""fail"">
+                                <err code=""112"" msg=""Method &quot;rtm.test.ech&quot; not found""/>
+                            </rsp>
+                        "
+                    )));
+            var httpClient = httpClientMock.Object;
+
+            var signatureGeneratorMock = new Mock<IMilkSignatureGenerator>();
+            signatureGeneratorMock.Setup(g => g.Generate(It.IsAny<IDictionary<string, string>>()))
+                .Returns("signature");
+  
+            var signatureGenerator = signatureGeneratorMock.Object;
+
+            var context = new MilkContext("api-key", "secret");
+            var milkTestClient = new MilkTestClient(context, httpClient, signatureGenerator);
+
+            var param = new Dictionary<string, string>();
+            param["foo"] = "bar";
+
+            var (_, fail) = await milkTestClient.Echo(param);
+
+            Assert.Equal("112", fail.Code);
+            Assert.Equal("Method \"rtm.test.ech\" not found", fail.Msg);
         }
     }
 }

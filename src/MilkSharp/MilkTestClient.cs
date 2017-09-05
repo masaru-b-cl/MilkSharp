@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace MilkSharp
@@ -34,6 +35,17 @@ namespace MilkSharp
 
             var response = await httpClient.Post(url, postParameters);
             var rawRsp = response.Content;
+            var xmlRsp = XElement.Parse(rawRsp);
+
+            var errorElements = xmlRsp.Elements("err");
+
+            if (errorElements.Any())
+            {
+                var err = errorElements.First();
+                return (null, new MilkFailureResponse(
+                    err.Attribute("code").Value,
+                    err.Attribute("msg").Value));
+            }
 
             var rsp = MilkTestEchoResponse.Parse(rawRsp);
 
