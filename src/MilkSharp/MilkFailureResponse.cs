@@ -4,6 +4,11 @@ namespace MilkSharp
 {
     public class MilkFailureResponse
     {
+        public MilkFailureResponse(MilkHttpResponseMessage responseMessage)
+        {
+            this.ResponseMessage = responseMessage;
+        }
+
         public MilkFailureResponse(string code, string msg)
         {
             this.Code = code;
@@ -12,5 +17,6 @@ namespace MilkSharp
 
         public string Code { get; private set; }
         public string Msg { get; private set; }
+        public MilkHttpResponseMessage ResponseMessage { get; private set; }
     }
 }

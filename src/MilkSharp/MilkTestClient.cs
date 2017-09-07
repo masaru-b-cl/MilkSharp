@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Xml.Linq;
+using System.Net;
 
 namespace MilkSharp
 {
@@ -34,6 +35,11 @@ namespace MilkSharp
             postParameters.Add("api_sig", signature);
 
             var response = await httpClient.Post(url, postParameters);
+
+            if (response.Status != HttpStatusCode.OK)
+            {
+                throw new MilkHttpRequestException();
+            }
             var rawRsp = response.Content;
             var xmlRsp = XElement.Parse(rawRsp);
 

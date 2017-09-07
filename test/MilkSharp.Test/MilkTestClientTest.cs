@@ -88,5 +88,42 @@ namespace MilkSharp.Test
             Assert.Equal("112", fail.Code);
             Assert.Equal("Method \"rtm.test.ech\" not found", fail.Msg);
         }
+
+        [Fact]
+        public async void HttpErrorOccurs()
+        {
+            var httpClientMock = new Mock<IMilkHttpClient>();
+            httpClientMock.Setup(c => c.Post(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+                .Returns(
+                    Task.FromResult(new MilkHttpResponseMessage
+                    (
+                        HttpStatusCode.ServiceUnavailable,
+                        ""
+                    )));
+            var httpClient = httpClientMock.Object;
+
+            var signatureGeneratorMock = new Mock<IMilkSignatureGenerator>();
+            signatureGeneratorMock.Setup(g => g.Generate(It.IsAny<IDictionary<string, string>>()))
+                .Returns("signature");
+  
+            var signatureGenerator = signatureGeneratorMock.Object;
+
+            var context = new MilkContext("api-key", "secret");
+            var milkTestClient = new MilkTestClient(context, httpClient, signatureGenerator);
+
+            var param = new Dictionary<string, string>();
+            param["foo"] = "bar";
+
+            var occured = false;
+            try
+            {
+                await milkTestClient.Echo(param);
+            }
+            catch (MilkHttpRequestException ex)
+            {
+                occured = true;
+            }
+            Assert.True(occured);
+        }
     }
 }
