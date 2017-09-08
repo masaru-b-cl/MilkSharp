@@ -55,7 +55,7 @@ namespace MilkSharp
 
             var rsp = MilkTestEchoResponse.Parse(rawRsp);
 
-            return (await Task.FromResult(rsp), null);
+            return (rsp, null);
         }
     }
 }

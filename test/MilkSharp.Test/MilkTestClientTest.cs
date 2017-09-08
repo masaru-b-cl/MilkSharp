@@ -24,9 +24,7 @@ namespace MilkSharp.Test
                         Assert.Equal("api-key", parameters["api_key"]);
                         Assert.Equal("signature", parameters["api_sig"]);
                     })
-                .Returns(
-                    Task.FromResult(new MilkHttpResponseMessage
-                    (
+                .Returns(Task.FromResult(new MilkHttpResponseMessage(
                         HttpStatusCode.OK,
                         @"
                             <rsp stat=""ok"">
@@ -119,7 +117,7 @@ namespace MilkSharp.Test
             {
                 await milkTestClient.Echo(param);
             }
-            catch (MilkHttpRequestException ex)
+            catch (MilkHttpRequestException)
             {
                 occured = true;
             }

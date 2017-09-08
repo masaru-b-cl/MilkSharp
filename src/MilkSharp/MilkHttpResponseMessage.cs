@@ -21,7 +21,7 @@ namespace MilkSharp
             var responseMessage = new MilkHttpResponseMessage(
                 httpResponseMessage.StatusCode,
                 await httpResponseMessage.Content.ReadAsStringAsync());
-            return await Task.FromResult(responseMessage);
+            return responseMessage;
         }
     }
 }
