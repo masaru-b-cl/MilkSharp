@@ -11,6 +11,17 @@ namespace MilkSharp.Test
 {
     public class MilkTestClientTest
     {
+        private IMilkSignatureGenerator signatureGenerator;
+
+        public MilkTestClientTest()
+        {
+            var signatureGeneratorMock = new Mock<IMilkSignatureGenerator>();
+            signatureGeneratorMock.Setup(g => g.Generate(It.IsAny<IDictionary<string, string>>()))
+                .Returns("signature");
+
+            signatureGenerator = signatureGeneratorMock.Object;
+        }
+
         [Fact]
         public async void EchoTest()
         {
@@ -32,12 +43,6 @@ namespace MilkSharp.Test
                         </rsp>
                     "
                 ));
-
-            var signatureGeneratorMock = new Mock<IMilkSignatureGenerator>();
-            signatureGeneratorMock.Setup(g => g.Generate(It.IsAny<IDictionary<string, string>>()))
-                .Returns("signature");
-
-            var signatureGenerator = signatureGeneratorMock.Object;
 
             var context = new MilkContext("api-key", "secret");
             var milkTestClient = new MilkTestClient(context, httpClient, signatureGenerator);
@@ -63,12 +68,6 @@ namespace MilkSharp.Test
                     "
                 ));
 
-            var signatureGeneratorMock = new Mock<IMilkSignatureGenerator>();
-            signatureGeneratorMock.Setup(g => g.Generate(It.IsAny<IDictionary<string, string>>()))
-                .Returns("signature");
-
-            var signatureGenerator = signatureGeneratorMock.Object;
-
             var context = new MilkContext("api-key", "secret");
             var milkTestClient = new MilkTestClient(context, httpClient, signatureGenerator);
 
@@ -87,12 +86,6 @@ namespace MilkSharp.Test
             var httpClient = CreateHttpClientMock(
                 new MilkHttpResponseMessage(HttpStatusCode.ServiceUnavailable, "")
                 );
-
-            var signatureGeneratorMock = new Mock<IMilkSignatureGenerator>();
-            signatureGeneratorMock.Setup(g => g.Generate(It.IsAny<IDictionary<string, string>>()))
-                .Returns("signature");
-
-            var signatureGenerator = signatureGeneratorMock.Object;
 
             var context = new MilkContext("api-key", "secret");
             var milkTestClient = new MilkTestClient(context, httpClient, signatureGenerator);
