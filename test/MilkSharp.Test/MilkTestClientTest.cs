@@ -11,10 +11,13 @@ namespace MilkSharp.Test
 {
     public class MilkTestClientTest
     {
+        private MilkContext context;
         private IMilkSignatureGenerator signatureGenerator;
 
         public MilkTestClientTest()
         {
+            context = new MilkContext("api-key", "secret");
+
             var signatureGeneratorMock = new Mock<IMilkSignatureGenerator>();
             signatureGeneratorMock.Setup(g => g.Generate(It.IsAny<IDictionary<string, string>>()))
                 .Returns("signature");
@@ -44,7 +47,6 @@ namespace MilkSharp.Test
                     "
                 ));
 
-            var context = new MilkContext("api-key", "secret");
             var milkTestClient = new MilkTestClient(context, httpClient, signatureGenerator);
 
             var param = new Dictionary<string, string>();
@@ -68,11 +70,9 @@ namespace MilkSharp.Test
                     "
                 ));
 
-            var context = new MilkContext("api-key", "secret");
             var milkTestClient = new MilkTestClient(context, httpClient, signatureGenerator);
 
             var param = new Dictionary<string, string>();
-            param["foo"] = "bar";
 
             var (_, fail) = await milkTestClient.Echo(param);
 
@@ -87,11 +87,9 @@ namespace MilkSharp.Test
                 new MilkHttpResponseMessage(HttpStatusCode.ServiceUnavailable, "")
                 );
 
-            var context = new MilkContext("api-key", "secret");
             var milkTestClient = new MilkTestClient(context, httpClient, signatureGenerator);
 
             var param = new Dictionary<string, string>();
-            param["foo"] = "bar";
 
             var occured = false;
             try
