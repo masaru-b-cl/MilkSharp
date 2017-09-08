@@ -1,11 +1,11 @@
-﻿using Moq;
-using Moq.Language;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
+
 using Xunit;
+using Moq;
+
+using static MilkSharp.Test.MilkTestHelper;
 
 namespace MilkSharp.Test
 {
@@ -21,7 +21,6 @@ namespace MilkSharp.Test
             var signatureGeneratorMock = new Mock<IMilkSignatureGenerator>();
             signatureGeneratorMock.Setup(g => g.Generate(It.IsAny<IDictionary<string, string>>()))
                 .Returns("signature");
-
             signatureGenerator = signatureGeneratorMock.Object;
         }
 
@@ -103,30 +102,5 @@ namespace MilkSharp.Test
             Assert.True(occured);
         }
 
-        private static IMilkHttpClient CreateHttpClientMock(MilkHttpResponseMessage httpResponse)
-        {
-            return CreateHttpClientMock(null, httpResponse);
-        }
-
-        private static IMilkHttpClient CreateHttpClientMock(
-            Action<string, IDictionary<string, string>> callbackAction,
-            MilkHttpResponseMessage httpResponse)
-        {
-            var httpClientMock = new Mock<IMilkHttpClient>();
-
-            var setup = httpClientMock.Setup(c => c.Post(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()));
-            IReturns<IMilkHttpClient, Task<MilkHttpResponseMessage>> returns;
-            if (callbackAction != null)
-            {
-                returns = setup.Callback(callbackAction);
-            }
-            else
-            {
-                returns = setup;
-            }
-            returns.Returns(Task.FromResult(httpResponse));
-
-            return httpClientMock.Object;
-        }
     }
 }
