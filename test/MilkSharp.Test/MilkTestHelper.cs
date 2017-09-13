@@ -28,7 +28,7 @@ namespace MilkSharp.Test
             {
                 returns = setup;
             }
-            returns.Returns(httpResponse));
+            returns.Returns(Task.FromResult(httpResponse));
 
             return httpClientMock.Object;
         }

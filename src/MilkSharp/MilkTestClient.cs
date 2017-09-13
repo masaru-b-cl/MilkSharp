@@ -13,8 +13,14 @@ namespace MilkSharp
         private IMilkHttpClient httpClient;
         private IMilkSignatureGenerator signatureGenerator;
 
-        public MilkTestClient(MilkContext context) : this(context, new MilkHttpClient(), new MilkSignatureGenerator(context))
+        public MilkTestClient(MilkContext context) : this(context, new MilkHttpClient())
         {
+        }
+
+        public MilkTestClient(MilkContext context, IMilkHttpClient httpClient) : this(context, httpClient, new MilkSignatureGenerator(context))
+        {
+            this.context = context;
+            this.httpClient = httpClient;
         }
 
         public MilkTestClient(MilkContext context, IMilkHttpClient httpClient, IMilkSignatureGenerator signatureGenerator)

@@ -12,21 +12,20 @@ namespace MilkSharp.Test
     public class MilkTestClientTest
     {
         private MilkContext context;
-        private IMilkSignatureGenerator signatureGenerator;
 
         public MilkTestClientTest()
         {
             context = new MilkContext("api-key", "secret");
-
-            var signatureGeneratorMock = new Mock<IMilkSignatureGenerator>();
-            signatureGeneratorMock.Setup(g => g.Generate(It.IsAny<IDictionary<string, string>>()))
-                .Returns("signature");
-            signatureGenerator = signatureGeneratorMock.Object;
         }
 
         [Fact]
         public async void EchoTest()
         {
+            var signatureGeneratorMock = new Mock<IMilkSignatureGenerator>();
+            signatureGeneratorMock.Setup(g => g.Generate(It.IsAny<IDictionary<string, string>>()))
+                .Returns("signature");
+            var signatureGenerator = signatureGeneratorMock.Object;
+
             IMilkHttpClient httpClient = CreateHttpClientMock(
                 (url, parameters) =>
                 {
@@ -69,7 +68,7 @@ namespace MilkSharp.Test
                     "
                 ));
 
-            var milkTestClient = new MilkTestClient(context, httpClient, signatureGenerator);
+            var milkTestClient = new MilkTestClient(context, httpClient);
 
             var param = new Dictionary<string, string>();
 
@@ -86,7 +85,7 @@ namespace MilkSharp.Test
                 new MilkHttpResponseMessage(HttpStatusCode.ServiceUnavailable, "")
                 );
 
-            var milkTestClient = new MilkTestClient(context, httpClient, signatureGenerator);
+            var milkTestClient = new MilkTestClient(context, httpClient);
 
             var param = new Dictionary<string, string>();
 
