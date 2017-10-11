@@ -29,6 +29,10 @@ namespace MilkSharp.Sample.ConsoleApp
             var (rsp, _) = await milkTestClient.Echo(param);
 
             Console.WriteLine(rsp["foo"]);
+
+            var authorizer = new MilkAuthorizer(context);
+            var (frob, _) = await authorizer.GetFrob();
+            Console.WriteLine($"frob:{frob}");
         }
     }
 }
