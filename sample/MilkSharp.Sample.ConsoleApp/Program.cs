@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace MilkSharp.Sample.ConsoleApp
@@ -33,6 +35,44 @@ namespace MilkSharp.Sample.ConsoleApp
             var authorizer = new MilkAuthorizer(context);
             var (frob, _) = await authorizer.GetFrob();
             Console.WriteLine($"frob:{frob}");
+
+            var authUrl = authorizer.GenerateAuthUrl(MilkPerms.Delete, frob);
+            Console.WriteLine($"authUrl: {authUrl}");
+
+            OpenUrlOnDefaultWebBrowser(authUrl);
+
+            Console.WriteLine("Please authenticate with the web page.");
+
+            Console.ReadKey();
+        }
+
+        private static void OpenUrlOnDefaultWebBrowser(string authUrl)
+        {
+            try
+            {
+                Process.Start(authUrl);
+            }
+            catch
+            {
+                // hack because of this: https://github.com/dotnet/corefx/issues/10361
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    authUrl = authUrl.Replace("&", "^&");
+                    Process.Start(new ProcessStartInfo("cmd", $"/c start {authUrl}") { CreateNoWindow = true });
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    Process.Start("xdg-open", authUrl);
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    Process.Start("open", authUrl);
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
     }
 }

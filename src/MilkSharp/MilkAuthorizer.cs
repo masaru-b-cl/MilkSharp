@@ -8,15 +8,23 @@ namespace MilkSharp
 {
     public class MilkAuthorizer
     {
-        private IMilkCoreClient milkCoreClient;
+        private readonly IMilkCoreClient milkCoreClient;
+        private readonly MilkContext context;
+        private readonly IMilkSignatureGenerator signatureGenerator;
 
         public MilkAuthorizer(IMilkCoreClient milkCoreClient)
         {
             this.milkCoreClient = milkCoreClient;
         }
 
-        public MilkAuthorizer(MilkContext context) : this(new MilkCoreClient(context))
+        public MilkAuthorizer(MilkContext context) : this(context, new MilkSignatureGenerator(context))
         {
+        }
+
+        public MilkAuthorizer(MilkContext context, IMilkSignatureGenerator signatureGenerator) : this(new MilkCoreClient(context))
+        {
+            this.context = context;
+            this.signatureGenerator = signatureGenerator;
         }
 
         public async Task<(string frob, MilkFailureResponse fail)> GetFrob()
@@ -29,6 +37,18 @@ namespace MilkSharp
             var frobElement = element.Descendants("frob").First();
             var frob = frobElement.Value;
             return (frob, null);
+        }
+
+        public string GenerateAuthUrl(MilkPerms perms, string frob)
+        {
+            var signature = signatureGenerator.Generate(
+                new Dictionary<string, string>
+                {
+                    { "api_key", context.ApiKey },
+                    { "perms", perms.ToString() },
+                    { "frob", frob },
+                });
+            return $"https://www.rememberthemilk.com/services/auth/?api_key={context.ApiKey}&perms={perms}&frob={frob}&api_sig={signature}";
         }
     }
 }

@@ -1,7 +1,8 @@
-﻿using Moq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using Xunit;
+using Moq;
 
 namespace MilkSharp.Test
 {
@@ -32,8 +33,8 @@ namespace MilkSharp.Test
 
         public class MilkAuthorizerTest
         {
-                        [Fact]
-            public async Task GetFrobTest()
+            [Fact]
+            public async void GetFrobTest()
             {
                 var milkCoreClientMock = new Mock<IMilkCoreClient>();
 
@@ -59,6 +60,24 @@ namespace MilkSharp.Test
                 Assert.Equal("frob", frob);
             }
 
+            [Fact]
+            public void GenerateAuthUrlTest()
+            {
+                var context = new MilkContext("api123", "sec123");
+
+                var signatureGeneratorMock = new Mock<IMilkSignatureGenerator>();
+                signatureGeneratorMock.Setup(g => g.Generate(It.IsAny<IDictionary<string, string>>()))
+                    .Returns("sig123");
+                var signatureGenerator = signatureGeneratorMock.Object;
+
+                var authorizer = new MilkAuthorizer(context, signatureGenerator);
+
+                var frob = "frob123";
+                var perms = MilkPerms.Delete;
+                var authUrl = authorizer.GenerateAuthUrl(perms, frob);
+
+                Assert.Equal("https://www.rememberthemilk.com/services/auth/?api_key=api123&perms=delete&frob=frob123&api_sig=sig123", authUrl);
+            }
         }
     }
 }
