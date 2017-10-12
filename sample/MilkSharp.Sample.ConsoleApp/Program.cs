@@ -33,7 +33,12 @@ namespace MilkSharp.Sample.ConsoleApp
             Console.WriteLine(rsp["foo"]);
 
             var authorizer = new MilkAuthorizer(context);
-            var (frob, _) = await authorizer.GetFrob();
+
+            var (frob, fail) = await authorizer.GetFrob();
+            if (fail != null)
+            {
+                throw new Exception($"API call is failed | code: {fail.Code}, msg: {fail.Msg}");
+            }
             Console.WriteLine($"frob:{frob}");
 
             var authUrl = authorizer.GenerateAuthUrl(MilkPerms.Delete, frob);
@@ -47,6 +52,8 @@ namespace MilkSharp.Sample.ConsoleApp
 
             var (authToken, _) = await authorizer.GetToken(frob);
             Console.WriteLine($"token: {authToken.Token}, perms: {authToken.Perms}");
+
+            context.AuthToken = authToken;
         }
 
         private static void OpenUrlOnDefaultWebBrowser(string authUrl)
