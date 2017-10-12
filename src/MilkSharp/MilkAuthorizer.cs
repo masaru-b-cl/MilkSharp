@@ -51,7 +51,7 @@ namespace MilkSharp
             return $"https://www.rememberthemilk.com/services/auth/?api_key={context.ApiKey}&perms={perms}&frob={frob}&api_sig={signature}";
         }
 
-        public async Task<(MilkAuthToken token, MilkFailureResponse fail)> GekToken(string frob)
+        public async Task<(MilkAuthToken token, MilkFailureResponse fail)> GetToken(string frob)
         {
             var (rawRsp, failureResponse) = await milkCoreClient.Invoke(
                 "rtm.auth.getToken",

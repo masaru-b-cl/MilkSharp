@@ -45,7 +45,7 @@ namespace MilkSharp.Sample.ConsoleApp
 
             Console.ReadKey();
 
-            var (authToken, _) = await authorizer.GekToken(frob);
+            var (authToken, _) = await authorizer.GetToken(frob);
             Console.WriteLine($"token: {authToken.Token}, perms: {authToken.Perms}");
         }
 

@@ -107,7 +107,7 @@ namespace MilkSharp.Test
                 var authorizer = new MilkAuthorizer(milkCoreClient);
 
                 var frob = "frob123";
-                (MilkAuthToken authToken, MilkFailureResponse fail) = await authorizer.GekToken(frob);
+                (MilkAuthToken authToken, MilkFailureResponse fail) = await authorizer.GetToken(frob);
 
                 Assert.Equal("410c57262293e9d937ee5be75eb7b0128fd61b61", authToken.Token);
                 Assert.Equal(MilkPerms.Delete, authToken.Perms);
