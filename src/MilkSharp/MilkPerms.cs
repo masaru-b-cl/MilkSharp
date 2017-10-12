@@ -1,4 +1,6 @@
-﻿namespace MilkSharp
+﻿using System;
+
+namespace MilkSharp
 {
     public class MilkPerms
     {
@@ -18,5 +20,12 @@
             return value;
         }
 
+        public static MilkPerms FromValue(string value)
+        {
+            return value == Read.value ? Read
+                : value == Write.value ? Write
+                : value == Delete.value ? Delete
+                : throw new ArgumentOutOfRangeException(nameof(value));
+        }
     }
 }
