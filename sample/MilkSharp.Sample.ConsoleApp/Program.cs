@@ -41,9 +41,12 @@ namespace MilkSharp.Sample.ConsoleApp
 
             OpenUrlOnDefaultWebBrowser(authUrl);
 
-            Console.WriteLine("Please authenticate with the web page.");
+            Console.WriteLine("Please authenticate with the web page, and push any key.");
 
             Console.ReadKey();
+
+            var (authToken, _) = await authorizer.GekToken(frob);
+            Console.WriteLine($"token: {authToken.Token}, perms: {authToken.Perms}");
         }
 
         private static void OpenUrlOnDefaultWebBrowser(string authUrl)
