@@ -7,7 +7,7 @@
 
 All APIs are async or observable. Empty or single result API returns Task/Task<T>, multiple result API returns IObservable<T>.
 
-`MilkSharp` is written in C# 7.0 and targeted for [.NET Standard 1.4](https://docs.microsoft.com/dotnet/standard/net-standard): .NET Core 1.0, .NET Framework 4.6.2 or higher, Mono 4.6, Xamarin.iOS 10.0, Xamarin.Android 7.0, UWP 10.0 and more.
+`MilkSharp` is written in C# 7.1 and targeted for [.NET Standard 1.4](https://docs.microsoft.com/dotnet/standard/net-standard): .NET Core 1.0, .NET Framework 4.6.2 or higher, Mono 4.6, Xamarin.iOS 10.0, Xamarin.Android 7.0, UWP 10.0 and more.
 
 ## VS. 
 
@@ -19,6 +19,8 @@ All APIs are async or observable. Empty or single result API returns Task/Task<T
 - Reactive Extnsions
 
 ## Usage
+
+### Authentication
 
 ```csharp
 // get API key and sahraed secret from Remember the Milk API site
@@ -44,27 +46,6 @@ var url = authorizer.GenerateAuthenticationUrl(frob);
 var token = await authorizer.GetToken(frob);
 
 context.Token = token;
-
-// create List client
-var milkLists = new MilkLists(context);
-
-// find list by name
-var milkList = await milkLists.FindList(name: "Inbox");
-
-// get task serieses from list
-IObservable<MilkTaskSeries> milkTaskSerieses = milkList.TaskSerieses();
-
-// print task names
-milkTaskSerieses
-    .Subscribe(milkTaskSeries => Console.WriteLine(milkTaskSeries.Name));
-```
-
-## Install
-
-Install as NuGet Package:
-
-```
-PM> Install-Package MilkSharp
 ```
 
 ## Licence
