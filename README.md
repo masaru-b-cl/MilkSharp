@@ -35,17 +35,24 @@ var context = new MilkContext(apyKey, sharedSecret);
 var authorizer = new MilkAuthorizer(context);
 
 // get frob
-var frob = await authorizer.GetFrob();
+var (frob, fail) = await authorizer.GetFrob();
+if (fail != null)
+{
+    // if API call is failed, you can get error information
+    // from `MilkFailureResponse` object
+    throw new Exception($"API call is failed | code: {fail.Code}, msg: {fail.Msg}");
+}
 
-// generate authentication URL
-var url = authorizer.GenerateAuthenticationUrl(frob);
+// generate authentication URL with "delete" permission
+var authUrl = authorizer.GenerateAuthUrl(MilkPerms.Delete, frob);
 
 // open authentication URL on your web browser
 
 // get token
-var token = await authorizer.GetToken(frob);
+var (authToken, _) = await authorizer.GetToken(frob);
 
-context.Token = token;
+// set token to context
+context.AuthToken = authToken;
 ```
 
 ## Licence
