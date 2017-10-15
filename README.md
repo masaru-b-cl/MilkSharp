@@ -41,7 +41,7 @@ if (fail != null)
     // if API call is failed, you can get error information
     // from `MilkFailureResponse` object
     throw new Exception($"API call is failed | code: {fail.Code}, msg: {fail.Msg}");
-}
+t}
 
 // generate authentication URL with "delete" permission
 var authUrl = authorizer.GenerateAuthUrl(MilkPerms.Delete, frob);
@@ -53,6 +53,21 @@ var (authToken, _) = await authorizer.GetToken(frob);
 
 // set token to context
 context.AuthToken = authToken;
+```
+
+### Get List
+
+```csharp
+// `context` is authenticated MilkContext instance
+
+// create rtm.lists api client
+var lists = new MilkLists(context);
+
+// get all list
+var listObservable = lists.GetList();
+
+// subscribe with Rx
+listObsrevalbe.Subscribe(list => Console.WriteLine($"id:{list.Id}, name:{list.Name}"));
 ```
 
 ## Licence
