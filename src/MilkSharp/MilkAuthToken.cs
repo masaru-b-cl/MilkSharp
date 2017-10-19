@@ -9,7 +9,7 @@ namespace MilkSharp
         {
         }
 
-        private MilkAuthToken(string token, MilkPerms perms)
+        public MilkAuthToken(string token, MilkPerms perms)
         {
             Token = token;
             Perms = perms;

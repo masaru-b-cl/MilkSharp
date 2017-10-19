@@ -59,6 +59,7 @@ namespace MilkSharp.Test
                     Assert.Equal("rtm.test.echo", parameters["method"]);
                     Assert.Equal("bar", parameters["foo"]);
                     Assert.Equal("api-key", parameters["api_key"]);
+                    Assert.Equal("test-token", parameters["auth_token"]);
                     Assert.Equal("signature", parameters["api_sig"]);
                 },
                 new MilkHttpResponseMessage(
@@ -70,6 +71,8 @@ namespace MilkSharp.Test
                         </rsp>
                     "
                 ));
+
+            context.AuthToken = new MilkAuthToken("test-token", MilkPerms.Delete);
 
             var milkCoreClient = new MilkCoreClient(context, signatureGenerator, httpClient);
 
