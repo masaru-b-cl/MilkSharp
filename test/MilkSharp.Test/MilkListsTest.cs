@@ -22,15 +22,16 @@ namespace MilkSharp.Test
                 {
                     Assert.Equal("rtm.lists.getList", method);
                 })
-                .Returns(() => Task.FromResult<(string, MilkFailureResponse)>((
-                    @"
-                        <rsp stat=""ok"">
-                            <lists>
-                              <list id=""100653"" name=""Inbox""
-                                   deleted=""0"" locked=""1"" archived=""0"" position=""-1"" smart=""0"" />
-                            </lists>
-                        </rsp>
-                        ",
+                .Returns(() => Task.FromResult<(string, MilkFailureResponse)>((@"
+                    <rsp stat=""ok"">
+                        <lists>
+                            <list id=""100653"" name=""Inbox""
+                                deleted=""1"" locked=""1"" archived=""1"" position=""-1"" smart=""1"">
+                                <filter>(priority:1)</filter>
+                            </list>
+                        </lists>
+                    </rsp>
+                    ",
                     null)));
             var milkCoreClient = milkCoreClientMock.Object;
 
@@ -42,6 +43,12 @@ namespace MilkSharp.Test
                 {
                     Assert.Equal(100653, list.Id);
                     Assert.Equal("Inbox", list.Name);
+                    Assert.True(list.Deleted);
+                    Assert.True(list.Locked);
+                    Assert.True(list.Archived);
+                    Assert.Equal(-1, list.Position);
+                    Assert.True(list.Smart);
+                    Assert.Equal("(priority:1)", list.Filter);
                 });
         }
     }
