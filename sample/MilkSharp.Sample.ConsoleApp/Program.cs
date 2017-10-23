@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Reactive.Linq;
 
 namespace MilkSharp.Sample.ConsoleApp
 {
@@ -54,6 +55,15 @@ namespace MilkSharp.Sample.ConsoleApp
             Console.WriteLine($"token: {authToken.Token}, perms: {authToken.Perms}");
 
             context.AuthToken = authToken;
+
+            var listClient = new MilkLists(context);
+            foreach (var list in listClient.GetList().ToEnumerable())
+            {
+                Console.WriteLine($"id: {list.Id}, name: {list.Name}");
+            }
+            Console.WriteLine("all list have gotten");
+
+            Console.ReadKey();
         }
 
         private static void OpenUrlOnDefaultWebBrowser(string authUrl)
