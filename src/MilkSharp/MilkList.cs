@@ -25,9 +25,9 @@ namespace MilkSharp
                 Locked = list.Attribute("locked").Value == "1",
                 Archived = list.Attribute("archived").Value == "1",
                 Position = int.Parse(list.Attribute("position").Value),
-                Smart = list.Attribute("smart").Value == "1",
-                Filter = list.Element("filter").Value,
+                Smart = list.Attribute("smart").Value == "1"
             };
+            milkList.Filter = milkList.Smart ? list.Element("filter").Value : null;
             return milkList;
         }
     }

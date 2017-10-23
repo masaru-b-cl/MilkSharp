@@ -57,13 +57,11 @@ namespace MilkSharp.Sample.ConsoleApp
             context.AuthToken = authToken;
 
             var listClient = new MilkLists(context);
-            listClient.GetList()
-                .Subscribe(
-                    list => Console.WriteLine($"id: {list.Id}, name: {list.Name}"),
-                    () =>
-                    {
-                        Console.WriteLine("all list have gotten");
-                    });
+            foreach (var list in listClient.GetList().ToEnumerable())
+            {
+                Console.WriteLine($"id: {list.Id}, name: {list.Name}");
+            }
+            Console.WriteLine("all list have gotten");
 
             Console.ReadKey();
         }
