@@ -51,8 +51,6 @@ namespace MilkSharp.Test
                 Assert.Equal(2, taskSeries.Id);
 
                 Assert.Equal(3, task.Id);
-                Assert.Equal("Get Bananas", task.Name);
-                Assert.Equal(new Uri("http://example.com"), task.Url);
             });
         }
     }
