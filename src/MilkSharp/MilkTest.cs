@@ -3,15 +3,15 @@ using System.Threading.Tasks;
 
 namespace MilkSharp
 {
-    public class MilkTestClient
+    public class MilkTest
     {
         private readonly IMilkCoreClient milkCoreClient;
 
-        public MilkTestClient(MilkContext context) : this(new MilkCoreClient(context))
+        public MilkTest(MilkContext context) : this(new MilkCoreClient(context))
         {
         }
 
-        public MilkTestClient(IMilkCoreClient milkCoreClient)
+        public MilkTest(IMilkCoreClient milkCoreClient)
         {
             this.milkCoreClient = milkCoreClient;
         }

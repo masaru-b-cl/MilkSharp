@@ -22,7 +22,7 @@ namespace MilkSharp.Sample.ConsoleApp
 
             var context = new MilkContext(configuration["api_key"], configuration["api_sig"]);
 
-            var milkTestClient = new MilkTestClient(context);
+            var milkTestClient = new MilkTest(context);
 
             var param = new Dictionary<string, string>
             {

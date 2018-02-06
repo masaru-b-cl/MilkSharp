@@ -7,7 +7,7 @@ using Moq;
 
 namespace MilkSharp.Test
 {
-    public class MilkTestClientTest
+    public class MilkTestTest
     {
         [Fact]
         public async void EchoTest()
@@ -31,7 +31,7 @@ namespace MilkSharp.Test
                     null)));
             var milkCoreClient = milkCoreClientMock.Object;
 
-            var milkTestClient = new MilkTestClient(milkCoreClient);
+            var milkTestClient = new MilkTest(milkCoreClient);
 
             var param = new Dictionary<string, string>();
             param["foo"] = "bar";
