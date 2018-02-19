@@ -15,20 +15,18 @@ namespace MilkSharp.Test
             var milkCoreClientMock = new Mock<IMilkCoreClient>();
             
             milkCoreClientMock
-                .Setup(client => client.Invoke(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+                .Setup(client => client.InvokeNew(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
                 .Callback<string, IDictionary<string, string>>((method, parameters) =>
                 {
                     Assert.Equal("rtm.test.echo", method);
                     Assert.Equal("bar", parameters["foo"]);
                 })
-                .Returns(() => Task.FromResult<(string, MilkFailureResponse)>((
-                    @"
-                        <rsp stat=""ok"">
-                            <method>rtm.test.echo</method>
-                            <foo>bar</foo>
-                        </rsp>
-                    ",
-                    null)));
+                .Returns(() => Task.FromResult<string>(@"
+                    <rsp stat=""ok"">
+                        <method>rtm.test.echo</method>
+                        <foo>bar</foo>
+                    </rsp>"
+                ));
             var milkCoreClient = milkCoreClientMock.Object;
 
             var milkTestClient = new MilkTest(milkCoreClient);
@@ -36,7 +34,7 @@ namespace MilkSharp.Test
             var param = new Dictionary<string, string>();
             param["foo"] = "bar";
 
-            var (rsp, _) = await milkTestClient.Echo(param);
+            var rsp = await milkTestClient.Echo(param);
 
             Assert.Equal("bar", rsp["foo"]);
         }

@@ -29,7 +29,7 @@ namespace MilkSharp.Sample.ConsoleApp
                 { "foo", "bar" }
             };
 
-            var (rsp, _) = await milkTestClient.Echo(param);
+            var rsp = await milkTestClient.Echo(param);
 
             Console.WriteLine(rsp["foo"]);
 
