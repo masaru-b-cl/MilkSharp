@@ -102,10 +102,16 @@ namespace MilkSharp.Test
 
             var param = new Dictionary<string, string>();
 
-            var (_, fail) = await milkCoreClient.Invoke("rtm.test.echo", new Dictionary<string, string>());
-
-            Assert.Equal("112", fail.Code);
-            Assert.Equal("Method \"rtm.test.ech\" not found", fail.Msg);
+            try
+            {
+                await milkCoreClient.Invoke("rtm.test.echo", new Dictionary<string, string>());
+                throw new Exception("not failed.");
+            }
+            catch (MilkFailureException ex)
+            {
+                Assert.Equal("112", ex.Code);
+                Assert.Equal("Method \"rtm.test.ech\" not found", ex.Msg);
+            }
         }
 
         [Fact]

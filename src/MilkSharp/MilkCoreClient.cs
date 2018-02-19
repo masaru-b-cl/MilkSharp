@@ -46,17 +46,14 @@ namespace MilkSharp
             var rawRsp = response.Content;
             var xmlRsp = XElement.Parse(rawRsp);
 
-            MilkFailureResponse failureResponse = null;
             var errorElements = xmlRsp.Elements("err");
             if (errorElements.Any())
             {
                 var err = errorElements.First();
-                failureResponse = new MilkFailureResponse(
-                    err.Attribute("code").Value,
-                    err.Attribute("msg").Value);
+                string code = err.Attribute("code").Value;
+                string msg = err.Attribute("msg").Value;
+                throw new MilkFailureException(code, msg);
             }
-
-            if (failureResponse != null) return (null, failureResponse);
 
             return (rawRsp, null);
         }
