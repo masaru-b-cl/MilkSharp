@@ -35,12 +35,16 @@ namespace MilkSharp.Sample.ConsoleApp
 
             var authorizer = new MilkAuthorizer(context);
 
-            var (frob, fail) = await authorizer.GetFrob();
-            if (fail != null)
+            string frob;
+            try
             {
-                throw new Exception($"API call is failed | code: {fail.Code}, msg: {fail.Msg}");
+                frob = await authorizer.GetFrob();
+                Console.WriteLine($"frob:{frob}");
             }
-            Console.WriteLine($"frob:{frob}");
+            catch (MilkFailureException ex)
+            {
+                throw new Exception($"API call is failed | code: {ex.Code}, msg: {ex.Msg}");
+            }
 
             var authUrl = authorizer.GenerateAuthUrl(MilkPerms.Delete, frob);
             Console.WriteLine($"authUrl: {authUrl}");

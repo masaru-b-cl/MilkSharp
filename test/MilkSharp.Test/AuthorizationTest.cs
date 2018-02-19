@@ -16,23 +16,22 @@ namespace MilkSharp.Test
                 var milkCoreClientMock = new Mock<IMilkCoreClient>();
 
                 milkCoreClientMock
-                    .Setup(client => client.Invoke(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+                    .Setup(client => client.InvokeNew(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
                     .Callback<string, IDictionary<string, string>>((method, parameters) =>
                     {
                         Assert.Equal("rtm.auth.getFrob", method);
                     })
-                    .Returns(() => Task.FromResult<(string, MilkFailureResponse)>((
+                    .Returns(() => Task.FromResult<string>(
                         @"
                             <rsp stat=""ok"">
                                 <frob>frob</frob>
                             </rsp>
-                        ",
-                        null)));
+                        "));
                 var milkCoreClient = milkCoreClientMock.Object;
 
                 var authorizer = new MilkAuthorizer(milkCoreClient);
 
-                (string frob, MilkFailureResponse fail) = await authorizer.GetFrob();
+                string frob = await authorizer.GetFrob();
 
                 Assert.Equal("frob", frob);
             }

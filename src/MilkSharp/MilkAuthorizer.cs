@@ -27,16 +27,14 @@ namespace MilkSharp
             this.signatureGenerator = signatureGenerator;
         }
 
-        public async Task<(string frob, MilkFailureResponse fail)> GetFrob()
+        public async Task<string> GetFrob()
         {
-            var (rawRsp, failureResponse) = await milkCoreClient.Invoke("rtm.auth.getFrob", new Dictionary<string, string>());
-
-            if (failureResponse != null) return (null, failureResponse);
+            var rawRsp = await milkCoreClient.InvokeNew("rtm.auth.getFrob", new Dictionary<string, string>());
 
             var element = XElement.Parse(rawRsp);
             var frobElement = element.Descendants("frob").First();
             var frob = frobElement.Value;
-            return (frob, null);
+            return frob;
         }
 
         public string GenerateAuthUrl(MilkPerms perms, string frob)
