@@ -6,5 +6,6 @@ namespace MilkSharp
     public interface IMilkCoreClient
     {
         Task<(string, MilkFailureResponse)> Invoke(string method, IDictionary<string, string> parameters);
+        Task<string> InvoceNew(string method, IDictionary<string, string> parameters);
     }
 }
