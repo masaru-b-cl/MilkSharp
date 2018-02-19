@@ -49,17 +49,15 @@ namespace MilkSharp
             return $"https://www.rememberthemilk.com/services/auth/?api_key={context.ApiKey}&perms={perms}&frob={frob}&api_sig={signature}";
         }
 
-        public async Task<(MilkAuthToken token, MilkFailureResponse fail)> GetToken(string frob)
+        public async Task<MilkAuthToken> GetToken(string frob)
         {
-            var (rawRsp, failureResponse) = await milkCoreClient.Invoke(
+            var rawRsp = await milkCoreClient.InvokeNew(
                 "rtm.auth.getToken",
                 new Dictionary<string, string>{
                     { "frob", frob }
                 });
 
-            if (failureResponse != null) return (null, failureResponse);
-
-            return (MilkAuthToken.Parse(rawRsp), null);
+            return MilkAuthToken.Parse(rawRsp);
         }
     }
 }

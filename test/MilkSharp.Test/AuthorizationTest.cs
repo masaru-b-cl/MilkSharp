@@ -21,7 +21,7 @@ namespace MilkSharp.Test
                     {
                         Assert.Equal("rtm.auth.getFrob", method);
                     })
-                    .Returns(() => Task.FromResult<string>(
+                    .Returns(() => Task.FromResult(
                         @"
                             <rsp stat=""ok"">
                                 <frob>frob</frob>
@@ -61,13 +61,13 @@ namespace MilkSharp.Test
                 var milkCoreClientMock = new Mock<IMilkCoreClient>();
 
                 milkCoreClientMock
-                    .Setup(client => client.Invoke(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+                    .Setup(client => client.InvokeNew(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
                     .Callback<string, IDictionary<string, string>>((method, parameters) =>
                     {
                         Assert.Equal("rtm.auth.getToken", method);
                         Assert.Equal("frob123", parameters["frob"]);
                     })
-                    .Returns(() => Task.FromResult<(string, MilkFailureResponse)>((
+                    .Returns(() => Task.FromResult(
                         @"
                             <rsp stat=""ok"">
                                 <auth>
@@ -76,14 +76,13 @@ namespace MilkSharp.Test
                                     <user id=""1"" username=""bob"" fullname=""Bob T. Monkey"" />
                                 </auth>
                             </rsp>
-                        ",
-                        null)));
+                        "));
                 var milkCoreClient = milkCoreClientMock.Object;
 
                 var authorizer = new MilkAuthorizer(milkCoreClient);
 
                 var frob = "frob123";
-                (MilkAuthToken authToken, MilkFailureResponse fail) = await authorizer.GetToken(frob);
+                MilkAuthToken authToken = await authorizer.GetToken(frob);
 
                 Assert.Equal("410c57262293e9d937ee5be75eb7b0128fd61b61", authToken.Token);
                 Assert.Equal(MilkPerms.Delete, authToken.Perms);
