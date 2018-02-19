@@ -22,7 +22,7 @@ namespace MilkSharp
 
             IDictionary<string, string> parameters = new Dictionary<string, string>();
             return milkCoreClient.InvokeNew(method, parameters)
-                .ToObservable<string>()
+                .ToObservable()
                 .Select(rawXml => XDocument.Parse(rawXml))
                 .SelectMany(xml => xml.Descendants("list"))
                 .SelectMany(listElement => listElement.Elements("taskseries")

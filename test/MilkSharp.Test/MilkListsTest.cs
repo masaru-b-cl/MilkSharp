@@ -17,12 +17,12 @@ namespace MilkSharp.Test
             var milkCoreClientMock = new Mock<IMilkCoreClient>();
 
             milkCoreClientMock
-                .Setup(client => client.Invoke(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+                .Setup(client => client.InvokeNew(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
                 .Callback<string, IDictionary<string, string>>((method, parameters) =>
                 {
                     Assert.Equal("rtm.lists.getList", method);
                 })
-                .Returns(() => Task.FromResult<(string, MilkFailureResponse)>((@"
+                .Returns(() => Task.FromResult(@"
                     <rsp stat=""ok"">
                         <lists>
                             <list id=""100653"" name=""Inbox""
@@ -31,8 +31,7 @@ namespace MilkSharp.Test
                             </list>
                         </lists>
                     </rsp>
-                    ",
-                    null)));
+                    "));
             var milkCoreClient = milkCoreClientMock.Object;
 
             var lists = new MilkLists(milkCoreClient);
