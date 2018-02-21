@@ -39,9 +39,9 @@ namespace MilkSharp
 
             var response = await httpClient.Post(url, postParameters);
 
-            if (response.Status != HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
-                throw new MilkHttpRequestException();
+                throw new MilkHttpException(response.StatusCode);
             }
             var rawRsp = response.Content;
             var xmlRsp = XElement.Parse(rawRsp);

@@ -130,9 +130,10 @@ namespace MilkSharp.Test
             {
                 await milkCoreClient.Invoke("rtm.test.echo", new Dictionary<string, string>());
             }
-            catch (MilkHttpRequestException)
+            catch (MilkHttpException ex)
             {
                 occured = true;
+                ex.StatusCode.Is(HttpStatusCode.ServiceUnavailable);
             }
             Assert.True(occured);
         }

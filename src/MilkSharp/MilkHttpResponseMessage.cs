@@ -7,16 +7,16 @@ namespace MilkSharp
 {
     public class MilkHttpResponseMessage
     {
-        public HttpStatusCode Status { get; private set; }
+        public HttpStatusCode StatusCode { get; private set; }
         public string Content { get; private set; }
 
-        public MilkHttpResponseMessage(HttpStatusCode status, string content)
+        public MilkHttpResponseMessage(HttpStatusCode statusCode, string content)
         {
-            Status = status;
+            StatusCode = statusCode;
             Content = content;
         }
 
-        public static async Task<MilkHttpResponseMessage> FromHttpResponseMessageAsync(HttpResponseMessage httpResponseMessage)
+        internal static async Task<MilkHttpResponseMessage> FromHttpResponseMessageAsync(HttpResponseMessage httpResponseMessage)
         {
             var responseMessage = new MilkHttpResponseMessage(
                 httpResponseMessage.StatusCode,
