@@ -15,7 +15,7 @@ namespace MilkSharp.Test
             var milkCoreClientMock = new Mock<IMilkCoreClient>();
             
             milkCoreClientMock
-                .Setup(client => client.InvokeNew(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+                .Setup(client => client.Invoke(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
                 .Callback<string, IDictionary<string, string>>((method, parameters) =>
                 {
                     Assert.Equal("rtm.test.echo", method);

@@ -20,7 +20,7 @@ namespace MilkSharp
         {
             const string method = "rtm.test.echo";
 
-            var rawRsp = await milkCoreClient.InvokeNew(method, parameters);
+            var rawRsp = await milkCoreClient.Invoke(method, parameters);
 
             var rsp = MilkTestEchoResponse.Parse(rawRsp);
 

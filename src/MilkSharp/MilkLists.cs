@@ -27,7 +27,7 @@ namespace MilkSharp
             const string method = "rtm.lists.getList";
 
             IDictionary<string, string> parameters = new Dictionary<string, string>();
-            var task = milkCoreClient.InvokeNew(method, parameters);
+            var task = milkCoreClient.Invoke(method, parameters);
 
             return task.ToObservable()
                 .Select(rawRsp => XElement.Parse(rawRsp))

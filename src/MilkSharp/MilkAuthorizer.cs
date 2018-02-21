@@ -29,7 +29,7 @@ namespace MilkSharp
 
         public async Task<string> GetFrob()
         {
-            var rawRsp = await milkCoreClient.InvokeNew("rtm.auth.getFrob", new Dictionary<string, string>());
+            var rawRsp = await milkCoreClient.Invoke("rtm.auth.getFrob", new Dictionary<string, string>());
 
             var element = XElement.Parse(rawRsp);
             var frobElement = element.Descendants("frob").First();
@@ -51,7 +51,7 @@ namespace MilkSharp
 
         public async Task<MilkAuthToken> GetToken(string frob)
         {
-            var rawRsp = await milkCoreClient.InvokeNew(
+            var rawRsp = await milkCoreClient.Invoke(
                 "rtm.auth.getToken",
                 new Dictionary<string, string>{
                     { "frob", frob }

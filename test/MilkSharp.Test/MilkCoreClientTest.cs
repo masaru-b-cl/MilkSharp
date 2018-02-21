@@ -76,7 +76,7 @@ namespace MilkSharp.Test
 
             var milkCoreClient = new MilkCoreClient(context, signatureGenerator, httpClient);
 
-            var (rawXml, _) = await milkCoreClient.Invoke("rtm.test.echo", new Dictionary<string, string>
+            var rawXml = await milkCoreClient.Invoke("rtm.test.echo", new Dictionary<string, string>
             {
                 { "foo", "bar" }
             });

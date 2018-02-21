@@ -23,13 +23,7 @@ namespace MilkSharp
         {
         }
 
-        public async Task<(string, MilkFailureResponse)> Invoke(string method, IDictionary<string, string> parameters)
-        {
-            var rawRsp = await InvokeNew(method, parameters);
-            return (rawRsp, null);
-        }
-
-        public async Task<string> InvokeNew(string method, IDictionary<string, string> parameters)
+        public async Task<string> Invoke(string method, IDictionary<string, string> parameters)
         {
             var url = $"https://api.rememberthemilk.com/services/rest/";
             var postParameters = new Dictionary<string, string>(parameters);
