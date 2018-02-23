@@ -37,13 +37,13 @@ namespace MilkSharp
             var signature = signatureGenerator.Generate(postParameters);
             postParameters.Add("api_sig", signature);
 
-            var response = await httpClient.Post(url, postParameters);
+            var response = await httpClient.PostAsync(url, postParameters);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 throw new MilkHttpException(response.StatusCode);
             }
-            var rawRsp = response.Content;
+            var rawRsp = await response.Content.ReadAsStringAsync();
             var xmlRsp = XElement.Parse(rawRsp);
 
             var errorElements = xmlRsp.Elements("err");

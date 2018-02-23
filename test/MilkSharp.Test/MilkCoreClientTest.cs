@@ -7,6 +7,7 @@ using Xunit;
 
 using Moq;
 using Moq.Language;
+using System.Net.Http;
 
 namespace MilkSharp.Test
 {
@@ -14,6 +15,7 @@ namespace MilkSharp.Test
     {
         private readonly MilkContext context;
         private readonly IMilkSignatureGenerator signatureGenerator;
+        private Mock<IMilkHttpClient> mock;
 
         public MilkCoreClientTest()
         {
@@ -23,54 +25,33 @@ namespace MilkSharp.Test
             signatureGeneratorMock.Setup(g => g.Generate(It.IsAny<IDictionary<string, string>>()))
                 .Returns("signature");
             signatureGenerator = signatureGeneratorMock.Object;
-        }
 
-        private static IMilkHttpClient CreateHttpClientMock(MilkHttpResponseMessage httpResponse) =>
-            CreateHttpClientMock(null, httpResponse);
-
-        private static IMilkHttpClient CreateHttpClientMock(
-            Action<string, IDictionary<string, string>> callbackAction,
-            MilkHttpResponseMessage httpResponse)
-        {
-            var httpClientMock = new Mock<IMilkHttpClient>();
-
-            var setup = httpClientMock.Setup(c => c.Post(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()));
-            IReturns<IMilkHttpClient, Task<MilkHttpResponseMessage>> returns;
-            if (callbackAction != null)
-            {
-                returns = setup.Callback(callbackAction);
-            }
-            else
-            {
-                returns = setup;
-            }
-            returns.Returns(Task.FromResult(httpResponse));
-
-            return httpClientMock.Object;
+            mock = new Mock<IMilkHttpClient>();
         }
 
         [Fact]
         public async Task SuccessTest()
         {
-            IMilkHttpClient httpClient = CreateHttpClientMock(
-                (url, parameters) =>
+            mock.Setup(c => c.PostAsync(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+                .Callback<string, IDictionary<string, string>>((_, parameters) =>
                 {
-                    Assert.Equal("https://api.rememberthemilk.com/services/rest/", url);
                     Assert.Equal("rtm.test.echo", parameters["method"]);
                     Assert.Equal("bar", parameters["foo"]);
                     Assert.Equal("api-key", parameters["api_key"]);
                     Assert.Equal("test-token", parameters["auth_token"]);
                     Assert.Equal("signature", parameters["api_sig"]);
-                },
-                new MilkHttpResponseMessage(
-                    HttpStatusCode.OK,
-                    @"
+                })
+                .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(@"
                         <rsp stat=""ok"">
                             <method>rtm.test.echo</method>
                             <foo>bar</foo>
                         </rsp>
-                    "
-                ));
+                    ")
+                }));
+
+            var httpClient = mock.Object;
 
             context.AuthToken = new MilkAuthToken("test-token", MilkPerms.Delete);
 
@@ -81,22 +62,29 @@ namespace MilkSharp.Test
                 { "foo", "bar" }
             });
 
-            var testEchoResponse = MilkTestEchoResponse.Parse(rawXml);
-            Assert.Equal("bar", testEchoResponse["foo"]);
+            rawXml.Is(@"
+                        <rsp stat=""ok"">
+                            <method>rtm.test.echo</method>
+                            <foo>bar</foo>
+                        </rsp>
+                    ");
+
+            mock.Verify(h => h.PostAsync("https://api.rememberthemilk.com/services/rest/", It.IsAny<IDictionary<string, string>>()));
         }
 
         [Fact]
         public async void FailureTest()
         {
-            var httpClient = CreateHttpClientMock(
-                new MilkHttpResponseMessage(
-                    HttpStatusCode.OK,
-                    @"
+            mock.Setup(c => c.PostAsync(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+                .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(@"
                         <rsp stat=""fail"">
                             <err code=""112"" msg=""Method &quot;rtm.test.ech&quot; not found""/>
                         </rsp>
-                    "
-                ));
+                    ")
+                }));
+            var httpClient = mock.Object;
 
             var milkCoreClient = new MilkCoreClient(context, signatureGenerator, httpClient);
 
@@ -117,9 +105,9 @@ namespace MilkSharp.Test
         [Fact]
         public async void HttpErrorOccurs()
         {
-            var httpClient = CreateHttpClientMock(
-                new MilkHttpResponseMessage(HttpStatusCode.ServiceUnavailable, "")
-                );
+            mock.Setup(c => c.PostAsync(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+                .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)));
+            var httpClient = mock.Object;
 
             var milkCoreClient = new MilkCoreClient(context, signatureGenerator, httpClient);
 
