@@ -13,9 +13,9 @@ namespace MilkSharp.Test
             [Fact]
             public async void GetFrobTest()
             {
-                var milkCoreClientMock = new Mock<IMilkCoreClient>();
+                var rawClientMock = new Mock<IMilkRawClient>();
 
-                milkCoreClientMock
+                rawClientMock
                     .Setup(client => client.Invoke(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
                     .Callback<string, IDictionary<string, string>>((method, parameters) =>
                     {
@@ -27,9 +27,9 @@ namespace MilkSharp.Test
                                 <frob>frob</frob>
                             </rsp>
                         "));
-                var milkCoreClient = milkCoreClientMock.Object;
+                var rawClient = rawClientMock.Object;
 
-                var authorizer = new MilkAuthorizer(milkCoreClient);
+                var authorizer = new MilkAuthorizer(rawClient);
 
                 string frob = await authorizer.GetFrob();
 
@@ -58,9 +58,9 @@ namespace MilkSharp.Test
             [Fact]
             public async void GetTokenTest()
             {
-                var milkCoreClientMock = new Mock<IMilkCoreClient>();
+                var rawClientMock = new Mock<IMilkRawClient>();
 
-                milkCoreClientMock
+                rawClientMock
                     .Setup(client => client.Invoke(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
                     .Callback<string, IDictionary<string, string>>((method, parameters) =>
                     {
@@ -77,9 +77,9 @@ namespace MilkSharp.Test
                                 </auth>
                             </rsp>
                         "));
-                var milkCoreClient = milkCoreClientMock.Object;
+                var rawClient = rawClientMock.Object;
 
-                var authorizer = new MilkAuthorizer(milkCoreClient);
+                var authorizer = new MilkAuthorizer(rawClient);
 
                 var frob = "frob123";
                 MilkAuthToken authToken = await authorizer.GetToken(frob);

@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 using Xunit;
-
 using Moq;
-using Moq.Language;
-using System.Net.Http;
 
 namespace MilkSharp.Test
 {
-    public class MilkCoreClientTest
+    public class MilkRawClientTest
     {
         private readonly MilkContext context;
         private readonly IMilkSignatureGenerator signatureGenerator;
         private Mock<IMilkHttpClient> mock;
 
-        public MilkCoreClientTest()
+        public MilkRawClientTest()
         {
             context = new MilkContext("api-key", "secret");
 
@@ -55,9 +53,9 @@ namespace MilkSharp.Test
 
             context.AuthToken = new MilkAuthToken("test-token", MilkPerms.Delete);
 
-            var milkCoreClient = new MilkCoreClient(context, signatureGenerator, httpClient);
+            var rawClient = new MilkRawClient(context, signatureGenerator, httpClient);
 
-            var rawXml = await milkCoreClient.Invoke("rtm.test.echo", new Dictionary<string, string>
+            var rawXml = await rawClient.Invoke("rtm.test.echo", new Dictionary<string, string>
             {
                 { "foo", "bar" }
             });
@@ -86,13 +84,13 @@ namespace MilkSharp.Test
                 }));
             var httpClient = mock.Object;
 
-            var milkCoreClient = new MilkCoreClient(context, signatureGenerator, httpClient);
+            var rawClient = new MilkRawClient(context, signatureGenerator, httpClient);
 
             var param = new Dictionary<string, string>();
 
             try
             {
-                await milkCoreClient.Invoke("rtm.test.echo", new Dictionary<string, string>());
+                await rawClient.Invoke("rtm.test.echo", new Dictionary<string, string>());
                 throw new Exception("not failed.");
             }
             catch (MilkFailureException ex)
@@ -109,14 +107,14 @@ namespace MilkSharp.Test
                 .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)));
             var httpClient = mock.Object;
 
-            var milkCoreClient = new MilkCoreClient(context, signatureGenerator, httpClient);
+            var rawClient = new MilkRawClient(context, signatureGenerator, httpClient);
 
             var param = new Dictionary<string, string>();
 
             var occured = false;
             try
             {
-                await milkCoreClient.Invoke("rtm.test.echo", new Dictionary<string, string>());
+                await rawClient.Invoke("rtm.test.echo", new Dictionary<string, string>());
             }
             catch (MilkHttpException ex)
             {

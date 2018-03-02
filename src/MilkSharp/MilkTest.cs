@@ -5,22 +5,22 @@ namespace MilkSharp
 {
     public class MilkTest
     {
-        private readonly IMilkCoreClient milkCoreClient;
+        private readonly IMilkRawClient rawClient;
 
-        public MilkTest(MilkContext context) : this(new MilkCoreClient(context))
+        public MilkTest(MilkContext context) : this(new MilkRawClient(context))
         {
         }
 
-        public MilkTest(IMilkCoreClient milkCoreClient)
+        public MilkTest(IMilkRawClient rawClient)
         {
-            this.milkCoreClient = milkCoreClient;
+            this.rawClient = rawClient;
         }
 
         public async Task<MilkTestEchoResponse> Echo(IDictionary<string, string> parameters)
         {
             const string method = "rtm.test.echo";
 
-            var rawRsp = await milkCoreClient.Invoke(method, parameters);
+            var rawRsp = await rawClient.Invoke(method, parameters);
 
             var rsp = MilkTestEchoResponse.Parse(rawRsp);
 

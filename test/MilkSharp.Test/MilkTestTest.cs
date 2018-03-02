@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 
 using Xunit;
-
 using Moq;
 
 namespace MilkSharp.Test
@@ -12,9 +11,9 @@ namespace MilkSharp.Test
         [Fact]
         public async void EchoTest()
         {
-            var milkCoreClientMock = new Mock<IMilkCoreClient>();
+            var rawClientMock = new Mock<IMilkRawClient>();
             
-            milkCoreClientMock
+            rawClientMock
                 .Setup(client => client.Invoke(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
                 .Callback<string, IDictionary<string, string>>((method, parameters) =>
                 {
@@ -27,9 +26,9 @@ namespace MilkSharp.Test
                         <foo>bar</foo>
                     </rsp>"
                 ));
-            var milkCoreClient = milkCoreClientMock.Object;
+            var rawClient = rawClientMock.Object;
 
-            var milkTestClient = new MilkTest(milkCoreClient);
+            var milkTestClient = new MilkTest(rawClient);
 
             var param = new Dictionary<string, string>();
             param["foo"] = "bar";

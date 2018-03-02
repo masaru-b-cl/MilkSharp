@@ -6,20 +6,25 @@ using System.Xml.Linq;
 
 namespace MilkSharp
 {
-    public class MilkCoreClient : IMilkCoreClient
+    public interface IMilkRawClient
+    {
+        Task<string> Invoke(string method, IDictionary<string, string> parameters);
+    }
+
+    public class MilkRawClient : IMilkRawClient
     {
         private readonly MilkContext context;
         private readonly IMilkSignatureGenerator signatureGenerator;
         private readonly IMilkHttpClient httpClient;
 
-        public MilkCoreClient(MilkContext context, IMilkSignatureGenerator signatureGenerator, IMilkHttpClient httpClient)
+        public MilkRawClient(MilkContext context, IMilkSignatureGenerator signatureGenerator, IMilkHttpClient httpClient)
         {
             this.context = context;
             this.signatureGenerator = signatureGenerator;
             this.httpClient = httpClient;
         }
 
-        public MilkCoreClient(MilkContext context) : this(context, new MilkSignatureGenerator(context), new MilkHttpClient())
+        public MilkRawClient(MilkContext context) : this(context, new MilkSignatureGenerator(context), new MilkHttpClient())
         {
         }
 

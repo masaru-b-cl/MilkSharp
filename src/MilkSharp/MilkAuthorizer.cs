@@ -8,20 +8,20 @@ namespace MilkSharp
 {
     public class MilkAuthorizer
     {
-        private readonly IMilkCoreClient milkCoreClient;
+        private readonly IMilkRawClient rawClient;
         private readonly MilkContext context;
         private readonly IMilkSignatureGenerator signatureGenerator;
 
-        public MilkAuthorizer(IMilkCoreClient milkCoreClient)
+        public MilkAuthorizer(IMilkRawClient rawClient)
         {
-            this.milkCoreClient = milkCoreClient;
+            this.rawClient = rawClient;
         }
 
         public MilkAuthorizer(MilkContext context) : this(context, new MilkSignatureGenerator(context))
         {
         }
 
-        public MilkAuthorizer(MilkContext context, IMilkSignatureGenerator signatureGenerator) : this(new MilkCoreClient(context))
+        public MilkAuthorizer(MilkContext context, IMilkSignatureGenerator signatureGenerator) : this(new MilkRawClient(context))
         {
             this.context = context;
             this.signatureGenerator = signatureGenerator;
@@ -29,7 +29,7 @@ namespace MilkSharp
 
         public async Task<string> GetFrob()
         {
-            var rawRsp = await milkCoreClient.Invoke("rtm.auth.getFrob", new Dictionary<string, string>());
+            var rawRsp = await rawClient.Invoke("rtm.auth.getFrob", new Dictionary<string, string>());
 
             var element = XElement.Parse(rawRsp);
             var frobElement = element.Descendants("frob").First();
@@ -51,7 +51,7 @@ namespace MilkSharp
 
         public async Task<MilkAuthToken> GetToken(string frob)
         {
-            var rawRsp = await milkCoreClient.Invoke(
+            var rawRsp = await rawClient.Invoke(
                 "rtm.auth.getToken",
                 new Dictionary<string, string>{
                     { "frob", frob }

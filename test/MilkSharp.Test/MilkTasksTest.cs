@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 using Xunit;
@@ -13,9 +12,9 @@ namespace MilkSharp.Test
         [Fact]
         public void GetListTestForAll()
         {
-            var milkCoreClientMock = new Mock<IMilkCoreClient>();
+            var rawClientMock = new Mock<IMilkRawClient>();
 
-            milkCoreClientMock
+            rawClientMock
                 .Setup(client => client.Invoke(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
                 .Callback<string, IDictionary<string, string>>((method, parameters) =>
                 {
@@ -37,9 +36,9 @@ namespace MilkSharp.Test
                         </tasks>
                     </rsp>
                     "));
-            var milkCoreClient = milkCoreClientMock.Object;
+            var rawClient = rawClientMock.Object;
 
-            var milkTasks = new MilkTasks(milkCoreClient);
+            var milkTasks = new MilkTasks(rawClient);
 
             IObservable<MilkTask> taskObservable = milkTasks.GetList();
             taskObservable.Subscribe(task =>
