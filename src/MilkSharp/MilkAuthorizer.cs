@@ -12,19 +12,19 @@ namespace MilkSharp
         private readonly MilkContext context;
         private readonly IMilkSignatureGenerator signatureGenerator;
 
-        public MilkAuthorizer(IMilkRawClient rawClient)
+        internal MilkAuthorizer(IMilkRawClient rawClient)
         {
             this.rawClient = rawClient;
         }
 
-        public MilkAuthorizer(MilkContext context) : this(context, new MilkSignatureGenerator(context))
-        {
-        }
-
-        public MilkAuthorizer(MilkContext context, IMilkSignatureGenerator signatureGenerator) : this(new MilkRawClient(context))
+        internal MilkAuthorizer(MilkContext context, IMilkSignatureGenerator signatureGenerator) : this(new MilkRawClient(context))
         {
             this.context = context;
             this.signatureGenerator = signatureGenerator;
+        }
+
+        public MilkAuthorizer(MilkContext context) : this(context, new MilkSignatureGenerator(context))
+        {
         }
 
         public async Task<string> GetFrob()

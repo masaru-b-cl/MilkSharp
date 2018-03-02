@@ -6,6 +6,11 @@ using System.Text;
 
 namespace MilkSharp
 {
+    internal interface IMilkSignatureGenerator
+    {
+        string Generate(IDictionary<string, string> postParameters);
+    }
+
     public class MilkSignatureGenerator : IMilkSignatureGenerator
     {
         private MilkContext context;

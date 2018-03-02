@@ -13,14 +13,14 @@ namespace MilkSharp
         private MilkContext context;
         private IMilkRawClient rawClient;
 
+        internal MilkLists(IMilkRawClient rawClient)
+        {
+            this.rawClient = rawClient;
+        }
+
         public MilkLists(MilkContext context) : this(new MilkRawClient(context))
         {
             this.context = context;
-        }
-
-        public MilkLists(IMilkRawClient rawClient)
-        {
-            this.rawClient = rawClient;
         }
 
         public IObservable<MilkList> GetList()

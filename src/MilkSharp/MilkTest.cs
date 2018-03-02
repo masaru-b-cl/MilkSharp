@@ -7,13 +7,13 @@ namespace MilkSharp
     {
         private readonly IMilkRawClient rawClient;
 
-        public MilkTest(MilkContext context) : this(new MilkRawClient(context))
-        {
-        }
-
-        public MilkTest(IMilkRawClient rawClient)
+        internal MilkTest(IMilkRawClient rawClient)
         {
             this.rawClient = rawClient;
+        }
+
+        public MilkTest(MilkContext context) : this(new MilkRawClient(context))
+        {
         }
 
         public async Task<MilkTestEchoResponse> Echo(IDictionary<string, string> parameters)

@@ -12,7 +12,7 @@ namespace MilkSharp
     {
         private IMilkRawClient rawClient;
 
-        public MilkTasks(IMilkRawClient rawClient)
+        internal MilkTasks(IMilkRawClient rawClient)
         {
             this.rawClient = rawClient;
         }

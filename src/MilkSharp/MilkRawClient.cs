@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 namespace MilkSharp
 {
-    public interface IMilkRawClient
+    internal interface IMilkRawClient
     {
         Task<string> Invoke(string method, IDictionary<string, string> parameters);
     }
@@ -17,7 +17,7 @@ namespace MilkSharp
         private readonly IMilkSignatureGenerator signatureGenerator;
         private readonly IMilkHttpClient httpClient;
 
-        public MilkRawClient(MilkContext context, IMilkSignatureGenerator signatureGenerator, IMilkHttpClient httpClient)
+        internal MilkRawClient(MilkContext context, IMilkSignatureGenerator signatureGenerator, IMilkHttpClient httpClient)
         {
             this.context = context;
             this.signatureGenerator = signatureGenerator;
