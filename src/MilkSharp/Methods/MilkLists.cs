@@ -34,7 +34,7 @@ namespace MilkSharp
                 .Select(rawRsp => XElement.Parse(rawRsp))
                 .Select(xmlRsp => xmlRsp.Descendants("list"))
                 .SelectMany(_ => _)
-                .Select(e => MilkList.Parse(e));
+                .Select(e => MilkParser.ParseList(e));
         }
     }
 }

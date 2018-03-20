@@ -57,7 +57,7 @@ namespace MilkSharp
                     { "frob", frob }
                 });
 
-            return MilkAuthToken.Parse(rawRsp);
+            return MilkParser.ParseAuthToken(rawRsp);
         }
     }
 }

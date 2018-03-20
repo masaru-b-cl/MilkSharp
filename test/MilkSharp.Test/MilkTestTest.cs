@@ -12,7 +12,7 @@ namespace MilkSharp.Test
         public async void EchoTest()
         {
             var rawClientMock = new Mock<IMilkRawClient>();
-            
+
             rawClientMock
                 .Setup(client => client.Invoke(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
                 .Callback<string, IDictionary<string, string>>((method, parameters) =>
@@ -30,8 +30,10 @@ namespace MilkSharp.Test
 
             var milkTestClient = new MilkTest(rawClient);
 
-            var param = new Dictionary<string, string>();
-            param["foo"] = "bar";
+            var param = new Dictionary<string, string>
+            {
+                {"foo", "bar" }
+            };
 
             var rsp = await milkTestClient.Echo(param);
 

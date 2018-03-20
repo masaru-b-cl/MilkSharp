@@ -16,15 +16,15 @@ namespace MilkSharp
         {
         }
 
-        public async Task<MilkTestEchoResponse> Echo(IDictionary<string, string> parameters)
+        public async Task<IDictionary<string, string>> Echo(IDictionary<string, string> parameters)
         {
             const string method = "rtm.test.echo";
 
             var rawRsp = await rawClient.Invoke(method, parameters);
 
-            var rsp = MilkTestEchoResponse.Parse(rawRsp);
+            var rsp = MilkParser.ParseEchoResponse(rawRsp);
 
             return rsp;
-        }
+        }   
     }
 }

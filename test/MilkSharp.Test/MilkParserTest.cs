@@ -5,10 +5,10 @@ using Xunit;
 
 namespace MilkSharp.Test
 {
-    public class MilkTaskSeriesTest
+    public class MilkParserTest
     {
         [Fact]
-        public void ParseTaskSeriesXmlElementWithFilledAttributes()
+        public void ParseTaskSeriesTest_WhenXmlElementWithFilledAttributes()
         {
             var element = XElement.Parse(@"
                 <taskseries id=""1"" created=""2015-05-07T10:19:54Z"" modified=""2015-05-07T11:19:54Z""
@@ -21,7 +21,7 @@ namespace MilkSharp.Test
                 </taskseries>
                 ");
 
-            var taskSeries = MilkTaskSeries.Parse(element);
+            var taskSeries = MilkParser.ParseTaskSeries(element);
 
             Assert.Equal(1, taskSeries.Id);
             Assert.Equal("Get Bananas", taskSeries.Name);

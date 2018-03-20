@@ -30,7 +30,7 @@ namespace MilkSharp
                     .Select(taskSeriesElement =>
                         (
                             listId: int.Parse(listElement.Attribute("id").Value),
-                            taskSeries: MilkTaskSeries.Parse(taskSeriesElement),
+                            taskSeries: MilkParser.ParseTaskSeries(taskSeriesElement),
                             taskElements: taskSeriesElement.Elements("task")
                         )
                     )
