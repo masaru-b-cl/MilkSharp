@@ -22,52 +22,55 @@ namespace MilkSharp.Sample.ConsoleApp
 
             var context = new MilkContext(configuration["api_key"], configuration["api_sig"]);
 
-            var milkTestClient = new MilkTest(context);
-
-            var param = new Dictionary<string, string>
-            {
-                { "foo", "bar" }
-            };
-
-            var rsp = await milkTestClient.Echo(param);
-
-            Console.WriteLine(rsp["foo"]);
-
-            var authorizer = new MilkAuthorizer(context);
-
-            string frob;
             try
             {
-                frob = await authorizer.GetFrob();
+                // rtm.test.* method client
+                var milkTestClient = new MilkTest(context);
+                var param = new Dictionary<string, string>
+                {
+                    { "foo", "bar" }
+                };
+                var rsp = await milkTestClient.Echo(param);
+                Console.WriteLine(rsp["foo"]);
+
+                // authorization
+                var authorizer = new MilkAuthorizer(context);
+
+                var frob = await authorizer.GetFrob();
                 Console.WriteLine($"frob:{frob}");
+
+                var authUrl = authorizer.GenerateAuthUrl(MilkPerms.Delete, frob);
+                Console.WriteLine($"authUrl: {authUrl}");
+
+                OpenUrlOnDefaultWebBrowser(authUrl);
+
+                Console.WriteLine("Please authenticate with the web page, and push any key.");
+
+                Console.ReadKey();
+
+                var authToken = await authorizer.GetToken(frob);
+                Console.WriteLine($"token: {authToken.Token}, perms: {authToken.Perms}");
+
+                context.AuthToken = authToken;
+
+                // rtm.lists.* method client
+                var listClient = new MilkLists(context);
+                foreach (var list in listClient.GetList().ToEnumerable())
+                {
+                    Console.WriteLine($"id: {list.Id}, name: {list.Name}");
+                }
+                Console.WriteLine("all list have gotten");
+
+                Console.ReadKey();
             }
-            catch (MilkFailureException ex)
+            catch (MilkHttpException httpEx)
             {
-                throw new Exception($"API call is failed | code: {ex.Code}, msg: {ex.Msg}");
+                Console.WriteLine($"http status code: {httpEx.StatusCode}");
             }
-
-            var authUrl = authorizer.GenerateAuthUrl(MilkPerms.Delete, frob);
-            Console.WriteLine($"authUrl: {authUrl}");
-
-            OpenUrlOnDefaultWebBrowser(authUrl);
-
-            Console.WriteLine("Please authenticate with the web page, and push any key.");
-
-            Console.ReadKey();
-
-            var authToken = await authorizer.GetToken(frob);
-            Console.WriteLine($"token: {authToken.Token}, perms: {authToken.Perms}");
-
-            context.AuthToken = authToken;
-
-            var listClient = new MilkLists(context);
-            foreach (var list in listClient.GetList().ToEnumerable())
+            catch (MilkFailureException failEx)
             {
-                Console.WriteLine($"id: {list.Id}, name: {list.Name}");
+                Console.WriteLine($"API call is failed | code: {failEx.Code}, msg: {failEx.Msg}");
             }
-            Console.WriteLine("all list have gotten");
-
-            Console.ReadKey();
         }
 
         private static void OpenUrlOnDefaultWebBrowser(string authUrl)

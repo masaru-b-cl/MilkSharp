@@ -7,7 +7,7 @@
 
 All APIs are async or observable. Empty or single result API returns Task/Task<T>, multiple result API returns IObservable<T>.
 
-`MilkSharp` is written in C# 7.1 and targeted for [.NET Standard 1.4](https://docs.microsoft.com/dotnet/standard/net-standard): .NET Core 1.0, .NET Framework 4.6.2 or higher, Mono 4.6, Xamarin.iOS 10.0, Xamarin.Android 7.0, UWP 10.0 and more.
+`MilkSharp` is written in C# 7.2 and targeted for [.NET Standard 2.0](https://docs.microsoft.com/dotnet/standard/net-standard): .NET Core 2.0, .NET Framework 4.6.1, Mono 5.4, Xamarin.iOS 10.14, Xamarin.Android 8.0, UWP 10.0.16299 and more.
 
 ## VS. 
 
@@ -15,7 +15,7 @@ All APIs are async or observable. Empty or single result API returns Task/Task<T
 
 ## Requirement
 
-- .NET Starndard 1.4 platforms
+- .NET Starndard 2.0 or higher platforms
 - Reactive Extnsions
 
 ## Usage
@@ -31,28 +31,33 @@ var sharedSecret = "(your shared secret)";
 // create context
 var context = new MilkContext(apyKey, sharedSecret);
 
-// create authorizer
-var authorizer = new MilkAuthorizer(context);
-
-// get frob
-var (frob, fail) = await authorizer.GetFrob();
-if (fail != null)
+try
 {
-    // if API call is failed, you can get error information
-    // from `MilkFailureResponse` object
-    throw new Exception($"API call is failed | code: {fail.Code}, msg: {fail.Msg}");
-t}
+    // create authorizer
+    var authorizer = new MilkAuthorizer(context);
 
-// generate authentication URL with "delete" permission
-var authUrl = authorizer.GenerateAuthUrl(MilkPerms.Delete, frob);
+    // get frob
+    var frob = await authorizer.GetFrob();
 
-// open authentication URL on your web browser
+    // generate authentication URL with "delete" permission
+    var authUrl = authorizer.GenerateAuthUrl(MilkPerms.Delete, frob);
 
-// get token
-var (authToken, _) = await authorizer.GetToken(frob);
+    // open authentication URL on your web browser
 
-// set token to context
-context.AuthToken = authToken;
+    // get token
+    var authToken = await authorizer.GetToken(frob);
+
+    // set token to context
+    context.AuthToken = authToken;
+}
+catch (MilkHttpException httpEx)
+{
+    Console.WriteLine($"http status code: {httpEx.StatusCode}");
+}
+catch (MilkFailureException failEx)
+{
+    Console.WriteLine($"API call is failed | code: {failEx.Code}, msg: {failEx.Msg}");
+}
 ```
 
 ### Get List
