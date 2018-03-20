@@ -33,19 +33,19 @@ var context = new MilkContext(apyKey, sharedSecret);
 
 try
 {
-    // create authorizer
-    var authorizer = new MilkAuthorizer(context);
+    // create auth client
+    var auth = new MilkAuth(context);
 
     // get frob
-    var frob = await authorizer.GetFrob();
+    var frob = await auth.GetFrob();
 
     // generate authentication URL with "delete" permission
-    var authUrl = authorizer.GenerateAuthUrl(MilkPerms.Delete, frob);
+    var authUrl = auth.GenerateAuthUrl(MilkPerms.Delete, frob);
 
     // open authentication URL on your web browser
 
     // get token
-    var authToken = await authorizer.GetToken(frob);
+    var authToken = await auth.GetToken(frob);
 
     // set token to context
     context.AuthToken = authToken;

@@ -6,24 +6,24 @@ using System.Xml.Linq;
 
 namespace MilkSharp
 {
-    public class MilkAuthorizer
+    public class MilkAuth
     {
         private readonly IMilkRawClient rawClient;
         private readonly MilkContext context;
         private readonly IMilkSignatureGenerator signatureGenerator;
 
-        internal MilkAuthorizer(IMilkRawClient rawClient)
+        internal MilkAuth(IMilkRawClient rawClient)
         {
             this.rawClient = rawClient;
         }
 
-        internal MilkAuthorizer(MilkContext context, IMilkSignatureGenerator signatureGenerator) : this(new MilkRawClient(context))
+        internal MilkAuth(MilkContext context, IMilkSignatureGenerator signatureGenerator) : this(new MilkRawClient(context))
         {
             this.context = context;
             this.signatureGenerator = signatureGenerator;
         }
 
-        public MilkAuthorizer(MilkContext context) : this(context, new MilkSignatureGenerator(context))
+        public MilkAuth(MilkContext context) : this(context, new MilkSignatureGenerator(context))
         {
         }
 

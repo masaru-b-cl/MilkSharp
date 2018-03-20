@@ -17,7 +17,7 @@ namespace MilkSharp.Sample.ConsoleApp
             // and modify "api_key" and "api_sig" values.
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("appConfig.json");
+                .AddJsonFile("appConfig.json");
             var configuration = builder.Build();
 
             var context = new MilkContext(configuration["api_key"], configuration["api_sig"]);
@@ -25,21 +25,21 @@ namespace MilkSharp.Sample.ConsoleApp
             try
             {
                 // rtm.test.* method client
-                var milkTestClient = new MilkTest(context);
+                var test = new MilkTest(context);
                 var param = new Dictionary<string, string>
                 {
                     { "foo", "bar" }
                 };
-                var rsp = await milkTestClient.Echo(param);
+                var rsp = await test.Echo(param);
                 Console.WriteLine(rsp["foo"]);
 
                 // authorization
-                var authorizer = new MilkAuthorizer(context);
+                var auth = new MilkAuth(context);
 
-                var frob = await authorizer.GetFrob();
+                var frob = await auth.GetFrob();
                 Console.WriteLine($"frob:{frob}");
 
-                var authUrl = authorizer.GenerateAuthUrl(MilkPerms.Delete, frob);
+                var authUrl = auth.GenerateAuthUrl(MilkPerms.Delete, frob);
                 Console.WriteLine($"authUrl: {authUrl}");
 
                 OpenUrlOnDefaultWebBrowser(authUrl);
@@ -48,18 +48,18 @@ namespace MilkSharp.Sample.ConsoleApp
 
                 Console.ReadKey();
 
-                var authToken = await authorizer.GetToken(frob);
+                var authToken = await auth.GetToken(frob);
                 Console.WriteLine($"token: {authToken.Token}, perms: {authToken.Perms}");
 
                 context.AuthToken = authToken;
 
                 // rtm.lists.* method client
-                var listClient = new MilkLists(context);
-                foreach (var list in listClient.GetList().ToEnumerable())
-                {
-                    Console.WriteLine($"id: {list.Id}, name: {list.Name}");
-                }
-                Console.WriteLine("all list have gotten");
+                var lists = new MilkLists(context);
+                lists.GetList()
+                    .Subscribe(
+                        list => Console.WriteLine($"id: {list.Id}, name: {list.Name}"),
+                        () => Console.WriteLine("all list have gotten")
+                    );
 
                 Console.ReadKey();
             }
