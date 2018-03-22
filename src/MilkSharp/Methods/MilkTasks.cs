@@ -10,11 +10,17 @@ namespace MilkSharp
 {
     public class MilkTasks
     {
+        private MilkContext context;
         private IMilkRawClient rawClient;
 
         internal MilkTasks(IMilkRawClient rawClient)
         {
             this.rawClient = rawClient;
+        }
+
+        public MilkTasks(MilkContext context) : this(new MilkRawClient(context))
+        {
+            this.context = context;
         }
 
         public IObservable<MilkTask> GetList()

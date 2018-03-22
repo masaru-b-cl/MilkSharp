@@ -33,13 +33,15 @@ namespace MilkSharp.Sample.ConsoleApp
                 var rsp = await test.Echo(param);
                 Console.WriteLine(rsp["foo"]);
 
-                // authorization
-                var auth = new MilkAuth(context);
+                // create client
+                var milkClient = new MilkClient(context);
 
-                var frob = await auth.GetFrob();
+                // authorization
+
+                var frob = await milkClient.Auth.GetFrob();
                 Console.WriteLine($"frob:{frob}");
 
-                var authUrl = auth.GenerateAuthUrl(MilkPerms.Delete, frob);
+                var authUrl = milkClient.Auth.GenerateAuthUrl(MilkPerms.Delete, frob);
                 Console.WriteLine($"authUrl: {authUrl}");
 
                 OpenUrlOnDefaultWebBrowser(authUrl);
@@ -48,16 +50,19 @@ namespace MilkSharp.Sample.ConsoleApp
 
                 Console.ReadKey();
 
-                var authToken = await auth.GetToken(frob);
+                var authToken = await milkClient.Auth.GetToken(frob);
                 Console.WriteLine($"token: {authToken.Token}, perms: {authToken.Perms}");
 
-                context.AuthToken = authToken;
+                milkClient.Context.AuthToken = authToken;
 
                 // rtm.lists.* method client
-                var lists = new MilkLists(context);
-                lists.GetList()
+                milkClient.Lists.GetList()
                     .Subscribe(
+                        // OnNext
                         list => Console.WriteLine($"id: {list.Id}, name: {list.Name}"),
+                        // OnError
+                        (ex) => Console.WriteLine(ex.Message),
+                        // OnComplete
                         () => Console.WriteLine("all list have gotten")
                     );
 

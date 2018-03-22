@@ -31,10 +31,13 @@ var sharedSecret = "(your shared secret)";
 // create context
 var context = new MilkContext(apyKey, sharedSecret);
 
+// create client object
+var milkClient = new MilkClient(context);
+
 try
 {
-    // create auth client
-    var auth = new MilkAuth(context);
+    // get auth client
+    var auth = milkClient.Auth;
 
     // get frob
     var frob = await auth.GetFrob();
@@ -63,16 +66,16 @@ catch (MilkFailureException failEx)
 ### Get List
 
 ```csharp
-// `context` is authenticated MilkContext instance
-
-// create rtm.lists api client
-var lists = new MilkLists(context);
-
-// get all list
-var listObservable = lists.GetList();
-
-// subscribe with Rx
-listObsrevalbe.Subscribe(list => Console.WriteLine($"id:{list.Id}, name:{list.Name}"));
+// get all list and subscribe with Rx
+milkClient.Lists.GetList()
+    .Subscribe(
+        // OnNext
+        list => Console.WriteLine($"id: {list.Id}, name: {list.Name}"),
+        // OnError
+        (ex) => Console.WriteLine(ex.Message),
+        // OnComplete
+        () => Console.WriteLine("all list have gotten")
+    );
 ```
 
 ## Licence

@@ -12,5 +12,7 @@ namespace MilkSharp
             Code = code;
             Msg = msg;
         }
+
+        public override string Message => $"API call is failed | code: {Code}, msg: {Msg}";
     }
 }

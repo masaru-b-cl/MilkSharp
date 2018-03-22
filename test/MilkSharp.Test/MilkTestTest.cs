@@ -28,16 +28,16 @@ namespace MilkSharp.Test
                 ));
             var rawClient = rawClientMock.Object;
 
-            var milkTestClient = new MilkTest(rawClient);
+            var test = new MilkClient(rawClient).Test;
 
             var param = new Dictionary<string, string>
             {
                 {"foo", "bar" }
             };
 
-            var rsp = await milkTestClient.Echo(param);
+            var result = await test.Echo(param);
 
-            Assert.Equal("bar", rsp["foo"]);
+            Assert.Equal("bar", result["foo"]);
         }
     }
 }

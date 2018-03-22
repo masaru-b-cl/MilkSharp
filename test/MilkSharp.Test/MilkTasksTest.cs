@@ -38,7 +38,7 @@ namespace MilkSharp.Test
                     "));
             var rawClient = rawClientMock.Object;
 
-            var milkTasks = new MilkTasks(rawClient);
+            var milkTasks = new MilkClient(rawClient).Tasks;
 
             IObservable<MilkTask> taskObservable = milkTasks.GetList();
             taskObservable.Subscribe(task =>

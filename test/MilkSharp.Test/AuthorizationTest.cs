@@ -27,7 +27,7 @@ namespace MilkSharp.Test
                         "));
             var rawClient = rawClientMock.Object;
 
-            var auth = new MilkAuth(rawClient);
+            var auth = new MilkClient(rawClient).Auth;
 
             var frob = await auth.GetFrob();
 
@@ -77,7 +77,7 @@ namespace MilkSharp.Test
                         "));
             var rawClient = rawClientMock.Object;
 
-            var auth = new MilkAuth(rawClient);
+            var auth = new MilkClient(rawClient).Auth;
 
             var frob = "frob123";
             var authToken = await auth.GetToken(frob);

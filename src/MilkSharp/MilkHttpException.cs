@@ -12,5 +12,7 @@ namespace MilkSharp
         }
 
         public HttpStatusCode StatusCode { get; private set; }
+
+        public override string Message => $"http status code: {StatusCode}";
     }
 }
