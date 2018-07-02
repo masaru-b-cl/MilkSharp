@@ -1,6 +1,8 @@
 # MilkSharp
 .NET API Kit for [Remember the Milk](https://www.rememberthemilk.com) APIs.
 
+[![Build status](https://ci.appveyor.com/api/projects/status/n7gmd6qpfyu6lniv/branch/master?svg=true)](https://ci.appveyor.com/project/masaru-b-cl/milksharp/branch/master)
+
 ## Description
 
 `MilkSharp` is based on [Task/Task<T> with async/await](https://docs.microsoft.com/dotnet/csharp/programming-guide/concepts/async/index) and [IObservable<T> with Reactive Extentions](https://github.com/Reactive-Extensions/Rx.NET).
